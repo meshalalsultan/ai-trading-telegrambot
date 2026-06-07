@@ -8,6 +8,23 @@ $stmt = $pdo->prepare("SELECT * FROM packages WHERE id=? AND is_active=1");
 $stmt->execute([$packageId]);
 $package = $stmt->fetch();
 
+$offerStmt = $pdo->prepare("
+    SELECT *
+    FROM package_offers
+    WHERE package_id = ?
+    AND is_active = 1
+    AND (start_date IS NULL OR start_date <= NOW())
+    AND (end_date IS NULL OR end_date >= NOW())
+    ORDER BY id DESC
+    LIMIT 1
+");
+$offerStmt->execute([$packageId]);
+$offer = $offerStmt->fetch();
+
+$bonusPoints = $offer ? (int)$offer['bonus_points'] : 0;
+$totalPoints = (int)$package['points'] + $bonusPoints;
+$offerTitle = $offer ? $offer['title'] : null;
+
 if (!$package || !$telegramId) {
     exit('Invalid request');
 }
@@ -52,7 +69,7 @@ $orderData = [
                 'currency_code' => $package['currency'],
                 'value' => number_format((float)$package['price'], 2, '.', '')
             ],
-            'description' => $package['name'] . ' - ' . $package['points'] . ' points'
+            'description' => $package['name'] . ' - ' . $totalPoints . ' points'
         ]
     ],
     'application_context' => [
@@ -94,7 +111,7 @@ $stmt->execute([
     $packageId,
     $order['id'],
     $package['price'],
-    $package['points'],
+    $totalPoints,
     $package['name'],
     $telegramId,
     $telegramId
