@@ -84,6 +84,7 @@ body {
     <a href="packages.php">💳 الباقات</a>
     <a href="transactions.php">💰 المدفوعات</a>
     <a href="conversations.php">💬 المحادثات</a>
+    <a href="offers.php">🔥 العروض</a>
     <a href="settings.php">⚙️ الإعدادات</a>
     <hr style="border-color:#374151">
     <a href="logout.php">🚪 خروج</a>
