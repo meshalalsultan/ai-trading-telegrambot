@@ -531,43 +531,67 @@ if (isset($update['callback_query'])) {
         sendMessage($chatId, "رصيدك الحالي: <b>{$user['points_balance']}</b> نقطة");
         exit;
     }
-
+    
     if ($data === 'buy_points') {
         global $pdo;
-
+    
         $stmt = $pdo->query("
             SELECT *
             FROM packages
             WHERE is_active = 1
             ORDER BY display_order ASC, id ASC
         ");
-
+    
         $packages = $stmt->fetchAll();
-
+    
         if (!$packages) {
             sendMessage($chatId, "لا توجد باقات متاحة حاليًا.");
             exit;
         }
-
+    
         $buttons = [];
-
+    
         foreach ($packages as $package) {
+    
+            $offerStmt = $pdo->prepare("
+                SELECT *
+                FROM package_offers
+                WHERE package_id = ?
+                AND is_active = 1
+                AND (start_date IS NULL OR start_date <= NOW())
+                AND (end_date IS NULL OR end_date >= NOW())
+                ORDER BY id DESC
+                LIMIT 1
+            ");
+    
+            $offerStmt->execute([$package['id']]);
+            $offer = $offerStmt->fetch();
+    
+            $bonus = $offer ? (int)$offer['bonus_points'] : 0;
+            $totalPoints = (int)$package['points'] + $bonus;
+    
+            if ($bonus > 0) {
+                $buttonText = "🔥 {$package['name']} | {$package['points']} + {$bonus} هدية = {$totalPoints} نقطة | $" . $package['price'];
+            } else {
+                $buttonText = "{$package['name']} | {$package['points']} نقطة | $" . $package['price'];
+            }
+    
             $buttons[] = [
                 [
-                    'text' => $package['name'] . ' | ' . $package['points'] . ' نقطة | $' . $package['price'],
+                    'text' => $buttonText,
                     'callback_data' => 'package:' . $package['id']
                 ]
             ];
         }
-
+    
         sendMessage(
             $chatId,
-            "💰 اختر باقة النقاط:",
+            "💰 اختر باقة النقاط:\n\n🔥 الباقات التي عليها عرض تظهر معها نقاط هدية تلقائيًا.",
             [
                 'inline_keyboard' => $buttons
             ]
         );
-
+    
         exit;
     }
 

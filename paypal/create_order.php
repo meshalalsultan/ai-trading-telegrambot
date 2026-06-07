@@ -73,10 +73,13 @@ $orderData = [
         ]
     ],
     'application_context' => [
-        'return_url' => $returnUrl,
-        'cancel_url' => $cancelUrl,
-        'user_action' => 'PAY_NOW'
-    ]
+    'return_url' => $returnUrl,
+    'cancel_url' => $cancelUrl,
+    'user_action' => 'PAY_NOW',
+    'landing_page' => 'BILLING',
+    'shipping_preference' => 'NO_SHIPPING',
+    'brand_name' => 'AI Trading Inspector'
+]
 ];
 
 $ch = curl_init($baseUrl . '/v2/checkout/orders');
