@@ -586,25 +586,35 @@ if (isset($update['callback_query'])) {
     
         sendMessage(
             $chatId,
-            "💰 اختر باقة النقاط:\n\n🔥 الباقات التي عليها عرض تظهر معها نقاط هدية تلقائيًا.",
-            [
-                'inline_keyboard' => $buttons
-            ]
+            "💳 لإتمام شراء الباقة اضغط الرابط:\n\n{$payUrl}\n\n" .
+            "ملاحظة: يمكنك الدفع بالبطاقة عبر PayPal عند توفر خيار الدفع كضيف.\n\n" .
+            "إذا واجهت أي مشكلة في الدفع أو طلب منك PayPal إنشاء حساب، تواصل معي هنا:\n" .
+            "@Mask_Trader_ai\n\n" .
+            "وسأرسل لك رابط دفع بديل خلال دقائق ✅"
         );
     
         exit;
     }
 
     if (str_starts_with($data, 'package:')) {
+
         $packageId = (int) str_replace('package:', '', $data);
-
+    
         $payUrl = "https://tradewithai.xyz/bot/paypal/create_order.php?package_id={$packageId}&telegram_id={$from['id']}";
-
+    
         sendMessage(
             $chatId,
-            "اضغط الرابط لإتمام الدفع عبر PayPal:\n\n{$payUrl}"
+            "💳 اضغط لإتمام الدفع بأمان عبر PayPal.\n\n" .
+            "{$payUrl}\n\n" .
+    
+            "إذا ظهر لك خيار الدفع بالبطاقة، يمكنك إتمام الدفع بدون إنشاء حساب.\n\n" .
+    
+            "إذا واجهت أي مشكلة في الدفع، تواصل معي مباشرة:\n" .
+            "@Mask_Trader_ai\n\n" .
+    
+            "وسأرسل لك رابط دفع مناسب خلال دقائق ✅"
         );
-
+    
         exit;
     }
 
