@@ -552,7 +552,6 @@ if (isset($update['callback_query'])) {
         $buttons = [];
     
         foreach ($packages as $package) {
-    
             $offerStmt = $pdo->prepare("
                 SELECT *
                 FROM package_offers
@@ -586,11 +585,10 @@ if (isset($update['callback_query'])) {
     
         sendMessage(
             $chatId,
-            "💳 لإتمام شراء الباقة اضغط الرابط:\n\n{$payUrl}\n\n" .
-            "ملاحظة: يمكنك الدفع بالبطاقة عبر PayPal عند توفر خيار الدفع كضيف.\n\n" .
-            "إذا واجهت أي مشكلة في الدفع أو طلب منك PayPal إنشاء حساب، تواصل معي هنا:\n" .
-            "@Mask_Trader_ai\n\n" .
-            "وسأرسل لك رابط دفع بديل خلال دقائق ✅"
+            "💰 اختر باقة النقاط:\n\n🔥 الباقات التي عليها عرض تظهر معها نقاط هدية تلقائيًا.",
+            [
+                'inline_keyboard' => $buttons
+            ]
         );
     
         exit;
@@ -600,8 +598,7 @@ if (isset($update['callback_query'])) {
 
         $packageId = (int) str_replace('package:', '', $data);
     
-        $payUrl = "https://tradewithai.xyz/bot/paypal/create_order.php?package_id={$packageId}&telegram_id={$from['id']}";
-    
+        $payUrl = "https://tradewithai.xyz/bot/paypal/checkout.php?package_id={$packageId}&telegram_id={$from['id']}";    
         sendMessage(
             $chatId,
             "💳 اضغط لإتمام الدفع بأمان عبر PayPal.\n\n" .
