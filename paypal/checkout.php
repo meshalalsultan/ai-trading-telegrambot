@@ -44,8 +44,7 @@ if ($mode === 'live') {
 
 <title>إتمام الدفع</title>
 
-<script src="https://www.paypal.com/sdk/js?client-id=<?= htmlspecialchars($clientId) ?>&currency=<?= htmlspecialchars($package['currency']) ?>&components=buttons,funding-eligibility"></script>
-
+<script src="https://www.paypal.com/sdk/js?client-id=<?= htmlspecialchars($clientId) ?>&currency=<?= htmlspecialchars($package['currency']) ?>&components=buttons,funding-eligibility&enable-funding=card&disable-funding=venmo,paylater"></script>
 <style>
 body {
     margin:0;
